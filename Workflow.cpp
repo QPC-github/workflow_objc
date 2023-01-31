@@ -136,8 +136,6 @@ void Workflow::inlineMethodCalls(AnalysisContextRef ac)
         if (!GlobalState::hasAnalysisInfo(bv)) {
             SharedAnalysisInfo info;
             CustomTypes::defineAll(bv);
-            CFStringArchitectureHook* currentHook = new CFStringArchitectureHook(bv->GetDefaultArchitecture());
-            bv->GetDefaultArchitecture()->Register(currentHook);
             auto messageHandler = GlobalState::messageHandler(bv);
 
             try {

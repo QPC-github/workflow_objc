@@ -13,25 +13,24 @@
 
 #include <algorithm>
 #include <cinttypes>
-#include <regex>
 
 using namespace BinaryNinja;
 
 std::string InfoHandler::sanitizeText(const std::string& text)
 {
-    std::string result;
+    // "Wow I AM a very@cool String@U*#(FW)E()*FUE" -> "WowIAMAVeryCoolStringU"
+    // Used for creating legal and readable variable names.
     std::string input = text.substr(0, 24);
-
-    std::regex re("[a-zA-Z0-9]+");
-    std::smatch sm;
-    while (std::regex_search(input, sm, re)) {
-        std::string part = sm[0];
-        part[0] = static_cast<char>(std::toupper(part[0]));
-
-        result += part;
-        input = sm.suffix();
+    std::string result;
+    bool capitalize = true;
+    for (char c : input) {
+        if (isalnum(c)) {
+            result.push_back(capitalize ? std::toupper(c) : c);
+            if (capitalize)
+                capitalize = false;
+        } else
+            capitalize = true;
     }
-
     return result;
 }
 

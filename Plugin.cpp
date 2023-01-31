@@ -9,6 +9,7 @@
 #include "Constants.h"
 #include "DataRenderers.h"
 #include "Workflow.h"
+#include "ArchitectureHooks.h"
 
 extern "C" {
 
@@ -22,6 +23,18 @@ BINARYNINJAPLUGIN bool CorePluginInit()
 
     Workflow::registerActivities();
     Commands::registerCommands();
+
+    std::vector<BinaryNinja::Ref<BinaryNinja::Architecture>> targets = {
+        BinaryNinja::Architecture::GetByName("aarch64"),
+        BinaryNinja::Architecture::GetByName("x86_64")
+    };
+    for (auto& target : targets) {
+        if (target)
+        {
+            auto* currentHook = new CFStringArchitectureHook(target);
+            target->Register(currentHook);
+        }
+    }
 
     BinaryNinja::LogRegistry::CreateLogger(PluginLoggerName);
 
